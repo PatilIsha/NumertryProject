@@ -66,7 +66,7 @@ if (formData.password && !passwordPattern.test(formData.password)) {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:5000/api/signup", formData);
+        const response = await axios.post("https://nodeproject-1-wo8x.onrender.com/api/signup", formData);
         console.log("User registered successfully:", response.data);
         alert("User registered successfully!");
       } catch (error) {
