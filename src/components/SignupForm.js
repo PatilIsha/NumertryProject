@@ -30,7 +30,7 @@ const SignupForm = () => {
     if (!formData.lastName) newErrors.lastName = "Last name is required.";
     if (!formData.email) newErrors.email = "Email is required.";
     if (!formData.password) newErrors.password = "Password is required.";
-    if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password.";
+    if (!formData.confirmPassword) newErrors.confirmPassword = "Confirm password is required.";
     if (!formData.age) newErrors.age = "Age is required.";
     if (!formData.mobile) newErrors.mobile = "Mobile number is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
@@ -41,15 +41,14 @@ const SignupForm = () => {
       newErrors.email = "Please enter a valid email address.";
     }
 
-    // Password validation (min 8 characters, at least one letter, one number, and one special character)
+    // Password validation (min 8 characters, at least one letter and one number)
     const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (formData.password && !passwordPattern.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters long, containing letters, numbers, and a special character.";
+      newErrors.password = "Password must be at least 8 characters long, containing letters, numbers, and a special character.";
     }
 
-    // Confirm Password validation
-    if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
+    // Password match validation
+    if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
     }
 
@@ -72,23 +71,9 @@ const SignupForm = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        // Exclude confirmPassword before sending to the backend
-        const { confirmPassword, ...dataToSubmit } = formData;
-
-        const response = await axios.post("http://localhost:5000/api/signup", dataToSubmit);
+        const response = await axios.post("https://nodeproject-1-wo8x.onrender.com/api/signup", formData);
         console.log("User registered successfully:", response.data);
         alert("User registered successfully!");
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          age: "",
-          mobile: "",
-          gender: "",
-        });
-        setErrors({});
       } catch (error) {
         console.error("Error registering user:", error);
         alert("Error registering user!");
@@ -186,9 +171,7 @@ const SignupForm = () => {
         </div>
         <div className="input-group">
           <select name="gender" value={formData.gender} onChange={handleChange} required>
-            <option value="" disabled>
-              Select Gender
-            </option>
+            <option value="" disabled>Select Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
