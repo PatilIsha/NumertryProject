@@ -9,6 +9,7 @@ const SignupForm = () => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     age: "",
     mobile: "",
     gender: "",
@@ -29,6 +30,7 @@ const SignupForm = () => {
     if (!formData.lastName) newErrors.lastName = "Last name is required.";
     if (!formData.email) newErrors.email = "Email is required.";
     if (!formData.password) newErrors.password = "Password is required.";
+    if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm your password.";
     if (!formData.age) newErrors.age = "Age is required.";
     if (!formData.mobile) newErrors.mobile = "Mobile number is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
@@ -39,13 +41,17 @@ const SignupForm = () => {
       newErrors.email = "Please enter a valid email address.";
     }
 
-    // Password validation (min 8 characters, at least one letter and one number)
+    // Password validation (min 8 characters, at least one letter, one number, and one special character)
     const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (formData.password && !passwordPattern.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters long, containing letters, numbers, and a special character.";
+    }
 
-if (formData.password && !passwordPattern.test(formData.password)) {
-  newErrors.password = "Password must be at least 8 characters long, containing letters, numbers, and a special character.";
-}
-
+    // Confirm Password validation
+    if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
 
     // Age validation (must be a number and greater than 18)
     if (formData.age && (isNaN(formData.age) || formData.age < 18)) {
@@ -66,9 +72,23 @@ if (formData.password && !passwordPattern.test(formData.password)) {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post("http://localhost:5000/api/signup", formData);
+        // Exclude confirmPassword before sending to the backend
+        const { confirmPassword, ...dataToSubmit } = formData;
+
+        const response = await axios.post("http://localhost:5000/api/signup", dataToSubmit);
         console.log("User registered successfully:", response.data);
         alert("User registered successfully!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          age: "",
+          mobile: "",
+          gender: "",
+        });
+        setErrors({});
       } catch (error) {
         console.error("Error registering user:", error);
         alert("Error registering user!");
@@ -129,6 +149,18 @@ if (formData.password && !passwordPattern.test(formData.password)) {
           {errors.password && <span className="error">{errors.password}</span>}
         </div>
         <div className="input-group">
+          <FiLock className="input-icon" />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+          {errors.confirmPassword && <span className="error">{errors.confirmPassword}</span>}
+        </div>
+        <div className="input-group">
           <FiAtSign className="input-icon" />
           <input
             type="number"
@@ -154,7 +186,9 @@ if (formData.password && !passwordPattern.test(formData.password)) {
         </div>
         <div className="input-group">
           <select name="gender" value={formData.gender} onChange={handleChange} required>
-            <option value="" disabled>Select Gender</option>
+            <option value="" disabled>
+              Select Gender
+            </option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
