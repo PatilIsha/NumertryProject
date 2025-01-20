@@ -91,7 +91,7 @@ const SignupForm = () => {
 
       try {
         const response = await axios.post(
-          "https://nodeproject-1-wo8x.onrender.com/api/signup", // Update the API endpoint URL if needed
+          "https://nodeproject-7ofz.onrender.com/api/signup", // Update the API endpoint URL if needed
           formDataToSend,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
