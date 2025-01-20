@@ -1,4 +1,12 @@
 /* LoginForm.css */
+.image-preview {
+  max-width: 200px; /* Adjust to the desired width */
+  max-height: 200px; /* Adjust to the desired height */
+  object-fit: cover; /* Keeps the aspect ratio intact */
+  border: 1px solid #ccc; /* Optional: adds a border */
+  border-radius: 10px; /* Optional: adds rounded corners */
+  margin-top: 10px; /* Adds some spacing */
+}
 
 .login-form {
     width: 300px;

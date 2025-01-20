@@ -13,13 +13,21 @@ const SignupForm = () => {
     age: "",
     mobile: "",
     gender: "",
+    image: null, // Add image field
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, image: file });
+    setImagePreview(URL.createObjectURL(file)); // Preview the selected image
   };
 
   const validateForm = () => {
@@ -34,6 +42,7 @@ const SignupForm = () => {
     if (!formData.age) newErrors.age = "Age is required.";
     if (!formData.mobile) newErrors.mobile = "Mobile number is required.";
     if (!formData.gender) newErrors.gender = "Gender is required.";
+    if (!formData.image) newErrors.image = "Profile image is required.";
 
     // Email validation
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -70,13 +79,27 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", formData.image);
+      formDataToSend.append("firstName", formData.firstName);
+      formDataToSend.append("lastName", formData.lastName);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("password", formData.password);
+      formDataToSend.append("age", formData.age);
+      formDataToSend.append("mobile", formData.mobile);
+      formDataToSend.append("gender", formData.gender);
+
       try {
-        const response = await axios.post("https://nodeproject-1-wo8x.onrender.com/api/signup", formData);
-        console.log("User registered successfully:", response.data);
+        const response = await axios.post(
+          "http://localhost:5000/api/signup", // Update the API endpoint URL if needed
+          formDataToSend,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
         alert("User registered successfully!");
+        console.log("Response:", response.data);
       } catch (error) {
-        console.error("Error registering user:", error);
-        alert("Error registering user!");
+        console.error("Error during registration:", error);
+        alert("Registration failed!");
       }
     }
   };
@@ -177,6 +200,12 @@ const SignupForm = () => {
             <option value="other">Other</option>
           </select>
           {errors.gender && <span className="error">{errors.gender}</span>}
+        </div>
+        <div className="input-group">
+          <label>Profile Image:</label>
+          <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
+          {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+          {errors.image && <span className="error">{errors.image}</span>}
         </div>
         <button type="submit">Register</button>
       </form>
