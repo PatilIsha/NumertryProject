@@ -18,6 +18,7 @@ const SignupForm = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const apiOrigin = process.env.REACT_APP_API_ORIGIN;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +92,7 @@ const SignupForm = () => {
 
       try {
         const response = await axios.post(
-          "https://nodeproject-1-wo8x.onrender.com", 
+          `${apiOrigin}/api/signup`, 
           formDataToSend,
           { headers: { "Content-Type": "multipart/form-data" } }
         );

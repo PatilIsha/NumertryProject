@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const apiOrigin = process.env.REACT_APP_API_ORIGIN;
 
   // Check if the user is already logged in by verifying the presence of the token
   useEffect(() => {
@@ -27,7 +28,7 @@ const LoginForm = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.post("https://nodeproject-1-wo8x.onrender.com/api/login", formData);
+      const response = await axios.post(`${apiOrigin}/api/login`, formData);
       localStorage.setItem("authToken", response.data.token);
       setLoading(false);
       navigate("/dashboard"); // Navigate to dashboard after successful login
