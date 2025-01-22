@@ -91,7 +91,7 @@ const SignupForm = () => {
 
       try {
         const response = await axios.post(
-          "https://nodeproject-1-wo8x.onrender.com", //http://localhost:5000/api/signup 
+          "https://nodeproject-1-wo8x.onrender.com", 
           formDataToSend,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
