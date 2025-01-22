@@ -18,7 +18,7 @@ const SignupForm = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
-  const apiOrigin = process.env.REACT_APP_API_ORIGIN;
+  const apiOrigin = "https://nodeproject-7ofz.onrender.com";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
